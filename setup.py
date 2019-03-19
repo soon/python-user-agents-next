@@ -2,19 +2,19 @@
 from setuptools import setup
 
 setup(
-    name='user-agents',
-    version='1.0.1',
+    name='user-agents-next',
+    version='1.1.0',
     author='Selwin Ong',
     author_email='selwin.ong@gmail.com',
-    packages=['user_agents'],
-    url='https://github.com/selwin/python-user-agents',
+    packages=['user_agents_next'],
+    url='https://github.com/soon/python-user-agents-next',
     license='MIT',
     description='A library to identify devices (phones, tablets) and their capabilities by parsing (browser/HTTP) user agent strings',
     long_description=open('README.rst').read(),
     zip_safe=False,
     include_package_data=True,
     package_data={'': ['README.rst']},
-    install_requires=['ua-parser>=0.4.1'],
+    install_requires=['ua-parser-next>=0.9.0'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',

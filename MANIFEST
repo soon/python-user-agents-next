@@ -2,7 +2,7 @@
 LICENSE.txt
 README.rst
 setup.py
-user_agents/__init__.py
-user_agents/compat.py
-user_agents/parsers.py
-user_agents/tests.py
+user_agents_next/__init__.py
+user_agents_next/compat.py
+user_agents_next/parsers.py
+user_agents_next/tests.py

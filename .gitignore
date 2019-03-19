@@ -6,3 +6,4 @@ cabal-dev
 *.pyc
 build/
 *.egg-info
+.idea/
