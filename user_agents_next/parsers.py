@@ -1,26 +1,26 @@
 from collections import namedtuple
 
 from ua_parser_next import user_agent_parser
-from .compat import string_types
+from user_agents_next.compat import string_types
 
 
-MOBILE_DEVICE_FAMILIES = (
+MOBILE_DEVICE_FAMILIES = {
     'iPhone',
     'iPod',
     'Generic Smartphone',
     'Generic Feature Phone',
     'PlayStation Vita',
     'iOS-Device'
-)
+}
 
-PC_OS_FAMILIES = (
+PC_OS_FAMILIES = {
     'Windows 95',
     'Windows 98',
     'Windows ME',
     'Solaris',
-)
+}
 
-MOBILE_OS_FAMILIES = (
+MOBILE_OS_FAMILIES = {
     'Windows Phone',
     'Windows Phone OS',  # Earlier versions of ua-parser returns Windows Phone OS
     'Symbian OS',
@@ -28,14 +28,15 @@ MOBILE_OS_FAMILIES = (
     'Windows CE',
     'Windows Mobile',
     'Maemo',
-)
+}
 
-MOBILE_BROWSER_FAMILIES = (
+MOBILE_BROWSER_FAMILIES = {
+    'IE Mobile',
     'Opera Mobile',
     'Opera Mini',
-)
+}
 
-TABLET_DEVICE_FAMILIES = (
+TABLET_DEVICE_FAMILIES = {
     'iPad',
     'BlackBerry Playbook',
     'Blackberry Playbook',  # Earlier versions of ua-parser returns "Blackberry" instead of "BlackBerry"
@@ -45,9 +46,9 @@ TABLET_DEVICE_FAMILIES = (
     'Galaxy Tab',
     'Xoom',
     'Dell Streak',
-)
+}
 
-TOUCH_CAPABLE_OS_FAMILIES = (
+TOUCH_CAPABLE_OS_FAMILIES = {
     'iOS',
     'Android',
     'Windows Phone',
@@ -57,15 +58,15 @@ TOUCH_CAPABLE_OS_FAMILIES = (
     'Windows Mobile',
     'Firefox OS',
     'MeeGo',
-)
+}
 
-TOUCH_CAPABLE_DEVICE_FAMILIES = (
+TOUCH_CAPABLE_DEVICE_FAMILIES = {
     'BlackBerry Playbook',
     'Blackberry Playbook',
     'Kindle Fire',
-)
+}
 
-EMAIL_PROGRAM_FAMILIES = set((
+EMAIL_PROGRAM_FAMILIES = {
     'Outlook',
     'Windows Live Mail',
     'AirMail',
@@ -82,7 +83,7 @@ EMAIL_PROGRAM_FAMILIES = set((
     'MailBar',
     'kmail2',
     'YahooMobileMail'
-))
+}
 
 def verify_attribute(attribute):
     if isinstance(attribute, string_types) and attribute.isdigit():
@@ -140,9 +141,8 @@ class UserAgent(object):
 
     def __str__(self):
         device = self.is_pc and "PC" or self.device.family
-        os = ("%s %s" % (self.os.family, self.os.version_string)).strip()
         browser = ("%s %s" % (self.browser.family, self.browser.version_string)).strip()
-        return " / ".join([device, os, browser])
+        return " / ".join([device, self.os_full_name, browser])
 
     def __unicode__(self):
         return unicode(str(self))
@@ -167,12 +167,16 @@ class UserAgent(object):
         return False
 
     @property
+    def os_full_name(self):
+        return ("%s %s" % (self.os.family, self.os.version_string)).strip()
+
+    @property
     def is_tablet(self):
         if self.device.family in TABLET_DEVICE_FAMILIES:
             return True
-        if (self.os.family == 'Android' and self._is_android_tablet()):
+        if self.os.family == 'Android' and self._is_android_tablet():
             return True
-        if self.os.family.startswith('Windows RT'):
+        if self.os.family.startswith('Windows RT') or self.os.family == 'Windows' and self.os.version_string == 'RT':
             return True
         if self.os.family == 'Firefox OS' and 'Mobile' not in self.browser.family:
             return True
@@ -192,7 +196,7 @@ class UserAgent(object):
             return True
         if self.os.family == 'BlackBerry OS' and self.device.family != 'Blackberry Playbook':
             return True
-        if self.os.family in MOBILE_OS_FAMILIES:
+        if self.os.family in MOBILE_OS_FAMILIES or self.os_full_name in MOBILE_OS_FAMILIES:
             return True
         # TODO: remove after https://github.com/tobie/ua-parser/issues/126 is closed
         if 'J2ME' in self.ua_string or 'MIDP' in self.ua_string:
@@ -213,11 +217,11 @@ class UserAgent(object):
     @property
     def is_touch_capable(self):
         # TODO: detect touch capable Nokia devices
-        if self.os.family in TOUCH_CAPABLE_OS_FAMILIES:
+        if self.os.family in TOUCH_CAPABLE_OS_FAMILIES or self.os_full_name in TOUCH_CAPABLE_OS_FAMILIES:
             return True
         if self.device.family in TOUCH_CAPABLE_DEVICE_FAMILIES:
             return True
-        if self.os.family.startswith('Windows 8') and 'Touch' in self.ua_string:
+        if self.os.family.startswith('Windows') and 'Touch' in self.ua_string:
             return True
         if 'BlackBerry' in self.os.family and self._is_blackberry_touch_capable_device():
             return True
@@ -226,7 +230,7 @@ class UserAgent(object):
     @property
     def is_pc(self):
         # Returns True for "PC" devices (Windows, Mac and Linux)
-        if 'Windows NT' in self.ua_string or self.os.family in PC_OS_FAMILIES:
+        if 'Windows NT' in self.ua_string or self.os.family in PC_OS_FAMILIES or self.os_full_name in PC_OS_FAMILIES:
             return True
         # TODO: remove after https://github.com/tobie/ua-parser/issues/127 is closed
         if self.os.family == 'Mac OS X' and 'Silk' not in self.ua_string:
