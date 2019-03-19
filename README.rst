@@ -16,7 +16,7 @@ parsing of the raw user agent string.
 Installation
 ------------
 
-.. figure:: https://secure.travis-ci.org/selwin/python-user-agents.png
+.. figure:: https://travis-ci.org/soon/python-user-agents-next.svg?branch=master
    :alt: Build status
 
    Build status
