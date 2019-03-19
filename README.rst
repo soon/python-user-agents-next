@@ -1,7 +1,7 @@
 Python User Agents
 ==================
 
-``user_agents`` is a Python library that provides an easy way to
+``user_agents_next`` is a Python library that provides an easy way to
 identify/detect devices like mobile phones, tablets and their
 capabilities by parsing (browser/HTTP) user agent strings. The goal is
 to reliably detect whether:
@@ -9,8 +9,8 @@ to reliably detect whether:
 -  User agent is a mobile, tablet or PC based device
 -  User agent has touch capabilities (has touch screen)
 
-``user_agents`` relies on the excellent
-`ua-parser <https://github.com/tobie/ua-parser>`_ to do the actual
+``user_agents_next`` relies on the excellent
+`ua-parser-next <https://github.com/soon/uap-python-next>`_ to do the actual
 parsing of the raw user agent string.
 
 Installation
@@ -21,18 +21,18 @@ Installation
 
    Build status
 
-``user-agents`` is hosted on
-`PyPI <http://pypi.python.org/pypi/user-agents/>`__ and can be installed
+``user-agents-next`` is hosted on
+`PyPI <http://pypi.python.org/pypi/user-agents-next/>`__ and can be installed
 as such:
 
 ::
 
-    pip install pyyaml ua-parser user-agents
+    pip install user-agents-next
 
 Alternatively, you can also get the latest source code from
 Github_ and install it manually.
 
-.. _Github: https://github.com/selwin/python-user-agents
+.. _Github: https://github.com/soon/python-user-agents-next
 
 Usage
 -----
@@ -43,7 +43,7 @@ accessed ``browser``, ``device`` and ``os`` attributes. For example:
 .. code:: python
 
 
-    from user_agents import parse
+    from user_agents_next import parse
 
     # iPhone's user agent string
     ua_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B179 Safari/7534.48.3'
@@ -70,7 +70,7 @@ accessed ``browser``, ``device`` and ``os`` attributes. For example:
     # Viewing a pretty string version
     str(user_agent) # returns "iPhone / iOS 5.1 / Mobile Safari 5.1"
 
-``user_agents`` also expose a few other more "sophisticated" attributes
+``user_agents_next`` also expose a few other more "sophisticated" attributes
 that are derived from one or more basic attributes defined above. As for
 now, these attributes should correctly identify popular
 platforms/devices, pull requests to support smaller ones are always
@@ -92,7 +92,7 @@ For example:
 .. code:: python
 
 
-    from user_agents import parse
+    from user_agents_next import parse
 
     # Let's start from an old, non touch Blackberry device
     ua_string = 'BlackBerry9700/5.0.0.862 Profile/MIDP-2.1 Configuration/CLDC-1.1 VendorID/331 UNTRUSTED/1.0 3gpp-gba'
@@ -154,7 +154,11 @@ Running Tests
 Changelog
 ---------
 
-Version 1.0.0
+Version 1.1.0
+~~~~~~~~~~~~~
+
+-  Updated ua-parser-next to 0.9.0
+
 ~~~~~~~~~~~~~
 
 -  Fixes packaging issue
