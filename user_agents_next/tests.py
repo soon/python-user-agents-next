@@ -2,7 +2,7 @@ import json
 import os
 import unittest
 
-from ua_parser import user_agent_parser
+from ua_parser_next import user_agent_parser
 from . import compat
 from .parsers import parse
 
