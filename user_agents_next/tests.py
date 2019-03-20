@@ -3,8 +3,9 @@ import os
 import unittest
 
 from ua_parser_next import user_agent_parser
+
 from user_agents_next import compat
-from user_agents_next.parsers import parse
+from user_agents_next.parsers import parse, Device
 
 
 iphone_ua_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B179 Safari/7534.48.3'
@@ -209,7 +210,6 @@ class UserAgentsTest(unittest.TestCase):
         self.assertFalse(nokia_n97_ua.is_email_client)
         self.assertFalse(android_firefox_aurora_ua.is_email_client)
 
-
     def test_strings(self):
         self.assertEqual(str(iphone_ua), "iPhone / iOS 5.1 / Mobile Safari 5.1")
         self.assertEqual(str(ipad_ua), "iPad / iOS 3.2 / Mobile Safari 4.0.4")
@@ -222,7 +222,9 @@ class UserAgentsTest(unittest.TestCase):
         self.assertEqual(str(windows_rt_ua), "PC / Windows RT / IE 10.0")
         self.assertEqual(str(blackberry_torch_ua), "BlackBerry 9800 / BlackBerry OS 6.0.0 / BlackBerry WebKit 6.0.0")
         self.assertEqual(str(blackberry_bold_ua), "BlackBerry 9700 / BlackBerry OS 5.0.0 / BlackBerry 9700")
-        self.assertEqual(str(blackberry_bold_touch_ua), "BlackBerry 9930 / BlackBerry OS 7.0.0 / BlackBerry WebKit 7.0.0")
+        self.assertEqual(
+            str(blackberry_bold_touch_ua), "BlackBerry 9930 / BlackBerry OS 7.0.0 / BlackBerry WebKit 7.0.0"
+        )
         self.assertEqual(str(j2me_opera_ua), "Generic Feature Phone / Other / Opera Mini 9.80")
         self.assertEqual(str(ie_ua), "PC / Windows 8 / IE 10.0")
         self.assertEqual(str(ie_touch_ua), "PC / Windows 8 / IE 10.0")
@@ -246,6 +248,21 @@ class UserAgentsTest(unittest.TestCase):
             self.assertEqual(unicode_ua_str,
                              "iPhone / iOS 5.1 / Mobile Safari 5.1")
 
+    def test_parse__with_extra_device_parsers(self):
+        custom_device_parser = user_agent_parser.DeviceParser(
+            r'; *((?:SCH|SGH|SHV|SHW|SPH|SC|SM)\-[A-Za-z0-9 ]+)(/?[^ ]*|)',
+            'Custom Samsung $1',
+            'Custom Samsung',
+            'Custom $1'
+        )
+        expected = Device('Custom Samsung', 'Custom SM-G973F', 'SM-G973F')
+        parsed_device = parse(
+            'Mozilla/5.0 (Linux; Android 9; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) '
+            'Chrome/72.0.3626.121 Mobile Safari/537.36',
+            extra_device_parsers=[custom_device_parser]
+        )
+        self.assertEqual(expected, parsed_device.device)
+
 
 with open(os.path.join(os.path.dirname(__file__), 'devices.json')) as f:
     devices = json.load(f)
@@ -261,7 +278,9 @@ def test_wrapper(items):
         # Temporarily commenting this out since UserAgent.device
         # may return different string depending ua-parser version
         # self.assertEqual(str(items['user_agent']), items['str'])
+
     return test_func
+
 
 for device, items in compat.iteritems(devices):
     items['user_agent'] = parse(items['ua_string'])

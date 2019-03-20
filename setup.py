@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
 
+
+with open('user_agents_next/__init__.py') as f:
+    lines = [x for x in f if x.startswith('__version__ = ')]
+    assert len(lines) == 1
+    version = lines[0][len('__version__ = '):].replace("'", '').replace('"', '').strip()
+
 setup(
     name='user-agents-next',
-    version='1.1.0',
+    version=version,
     author='Selwin Ong',
     author_email='selwin.ong@gmail.com',
     packages=['user_agents_next'],
@@ -14,7 +20,7 @@ setup(
     zip_safe=False,
     include_package_data=True,
     package_data={'': ['README.rst']},
-    install_requires=['ua-parser-next>=0.9.0'],
+    install_requires=['ua-parser-next>=0.9.1'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',

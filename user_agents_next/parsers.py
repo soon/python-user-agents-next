@@ -1,6 +1,7 @@
 from collections import namedtuple
 
 from ua_parser_next import user_agent_parser
+
 from user_agents_next.compat import string_types
 
 
@@ -85,6 +86,7 @@ EMAIL_PROGRAM_FAMILIES = {
     'YahooMobileMail'
 }
 
+
 def verify_attribute(attribute):
     if isinstance(attribute, string_types) and attribute.isdigit():
         return int(attribute)
@@ -132,8 +134,8 @@ def parse_device(family, brand, model):
 
 class UserAgent(object):
 
-    def __init__(self, user_agent_string):
-        ua_dict = user_agent_parser.Parse(user_agent_string)
+    def __init__(self, user_agent_string, extra_device_parsers=None):
+        ua_dict = user_agent_parser.parse(user_agent_string, extra_device_parsers=extra_device_parsers)
         self.ua_string = user_agent_string
         self.os = parse_operating_system(**ua_dict['os'])
         self.browser = parse_browser(**ua_dict['user_agent'])
@@ -192,7 +194,7 @@ class UserAgent(object):
         # Device is considered Mobile OS is Android and not tablet
         # This is not fool proof but would have to suffice for now
         if ((self.os.family == 'Android' or self.os.family == 'Firefox OS')
-            and not self.is_tablet):
+                and not self.is_tablet):
             return True
         if self.os.family == 'BlackBerry OS' and self.device.family != 'Blackberry Playbook':
             return True
@@ -254,5 +256,6 @@ class UserAgent(object):
             return True
         return False
 
-def parse(user_agent_string):
-    return UserAgent(user_agent_string)
+
+def parse(user_agent_string, extra_device_parsers=None):
+    return UserAgent(user_agent_string, extra_device_parsers=extra_device_parsers)
