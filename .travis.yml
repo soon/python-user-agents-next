@@ -1,14 +1,33 @@
-language: python
+sudo: false
 dist: xenial
-python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  - "3.7"
+language: python
+
+matrix:
+    include:
+      - python: 2.7
+        env: TOX_ENV=py27
+      - python: 3.4
+        env: TOX_ENV=py34
+      - python: 3.5
+        env: TOX_ENV=py35
+      - python: 3.6
+        env: TOX_ENV=py36
+      - python: 3.7
+        env: TOX_ENV=py37
+
 install:
-  - "python setup.py install"
-  - "pip install -U pip"
-  - "pip install pyyaml ua-parser-next"
+  - pip install tox
+
 script:
-  - python -m unittest discover
+  - tox -e $TOX_ENV
+
+deploy:
+  provider: pypi
+  user:
+    secure: VptJcJWdcdPbpA16h9id5GQUcJgqu/rrfaw+m89x8txFck6KanbAZEDghV+xgBEbQkyW9yf3RdCDxtDbMlOBV5DagLblMGX40OA1CqjnxlsWwChZxnoCIrhWy/7BWv3i9HHATzfhBAV3AkzPZaH9j6Fnpc1tQTHinSLDWLleQHbuJBdzZJ+FChmu6PN4roCQ9tLMq7iyxOTIZD+sIsLqCv3xyJU8n+LfmzKF1XkAKXKsRTV2pO9C2NbGO3ZlIhMfuC1kxmHMJ49z9v0Ww3F7R/YiRZPyekC8aDalpG31CRub3+mlFMS+LUNZ3gHHt76suFZFcHh/dCcrtzGNGiWup9GMumVzFCEB444f1gKqHT48ruka2bChWerHKDZRTIUfHWb7c3icyU5ksmXl0kpT6KW+Z22Bsk3jN2Sf3zrexCDm1JmrQ5py7IjHo1cXjmZnDd1PpcPGPmRaNBC/DriMwSIKKMleWlRunBw+hd7Z58caoA/NiVb/FJmOiihRPhGAXEQE35HWJyGJ1mVxw40FFTXxZsRm8defco2r3Hs3deefq4ovieszxxiPsJv9TDVoKXytkE4GxR7uvlb0tdbLBAWoaXaV/dGmxb7AZcDseigK8ApDonyOojDQX7Li1aYa6Pd9jWXPgg5Dr83xBMxRxDOXFxTXscTMiEWVJHlF6aU=
+  password:
+    secure: G+/tlxbmdoXsoz17SPepcNVmlm+bPD4PKpQzH7ugTucnQoh246i2yXQePYoi2wUP+JkJjDS2Y+86F3NDqjHJ5VtjAVkFq2te0BYqNHeTgO5eDq0vnqq32+TfQh8+g/H1uo/b4gNNjgIKc47hd4aAAWV0XTToOpTnQ0B976F+8yNyHVc6kEQj3U+pB2qV+lbsRck6ZMgfffg3sbVi/PR+8QPn/hbAxfIs/uVUe7ynuksuxTyIkZuoyxrudKJW0w/H2eIqkanTY6Jgwmx7BA7HmYMLiVv1H6aILp7xnLzCIKNFEn5U5bmcyyRoDkZTr1PDFEAcvPVq6SGLPgwVBfySov/H3g+wY8PqU+DFcgrNK4WT+iciYpsPoVndhvQAvxJbKSD+tNrLT4nzjsAJMk/hNerh4bWSCIFXtXUs5YWp/o8+2YV5ta4qSCisUdttSq0JKqvpVNtSK/og3ENDJ4R5WOO7gM6d6gOCiNYh5lYgoarAs+1EtlTmZ6RWJIfg11rcX9RURuNeg49gdTCyjzpUI0JmjJdB8de018L9VLk/gSdepoA+0W3MZ8GHXO2WZx6qRjkwDGPlIYtwVKrR3+RKZs74abxKcsvkjQ2K4Z0M8UO+SLdAlemheMe4t/EFksC7BkldSbKNXdQfTGbnG5yyYaiyRpplj1hB+7t0ha8Curo=
+  on:
+    tags: true
+    condition: $TOX_ENV=py37
+  skip_existing: true
