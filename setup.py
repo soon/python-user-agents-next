@@ -20,7 +20,7 @@ setup(
     zip_safe=False,
     include_package_data=True,
     package_data={'': ['README.rst']},
-    install_requires=['ua-parser-next>=0.9.1'],
+    install_requires=['ua-parser-next>=0.9.2'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
